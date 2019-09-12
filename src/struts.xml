@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+    <!--配置Struts2常量 默认value为action-->
+    <constant name="struts.action.extension" value="zzj"/>
+    <!-- 设置当前为开发阶段，可以打印出详细的错误信息 -->
+    <!--<constant name="struts.devMode" value="true"/>-->
+    <!-- 设置当 struts.xml 文件更改后，系统自动重新加载该文件 -->
+    <!--<constant name="struts.configuration.xml.reload" value="true"/>-->
+    <!-- 指定 Web 应用的默认编码 -->
+    <!--<constant name="struts.i18n.encoding" value="UTF-8"/>-->
+    <!-- 禁用浏览器缓存静态内容 -->
+    <!--<constant name="struts.serve.static.browserCache" value="false"/>-->
+    <!-- 设置默认视图主题 -->
+    <!--<constant name="struts.ui.theme" value="simple"/>-->
+    <!-- 设置由 Spring 来管理 action 对象 -->
+    <!--<constant name="struts.objectFactory" value="spring"/>-->
+    <package name="demo1" extends="struts-default" namespace="/">
+        <action name="userAction_add" class="userAction" method="add">
+            <result name="success">login.jsp</result>
+        </action>
+        <action name="userAction_query" class="userAction" method="query">
+            <result name="success">success.jsp</result>
+        </action>
+        <!--通配符配置-->
+        <!--<action name="userAction_*" class="userAction" method="{1}"></action>-->
+        <!--<action name="*_*" class="xxx.{1}" method="{2}"></action>-->
+    </package>
+    <!--开启动态方法访问-->
+    <!--<constant name="struts.enable.DynamicMethodInvocation" value="true"/>-->
+    <!--导入其他路径配置文件，主要用于协作开发-->
+    <!--<include file="name/zzj/struts-demo1.xml"/>-->
+</struts>

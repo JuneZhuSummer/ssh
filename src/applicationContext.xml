@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+             http://www.springframework.org/schema/aop
+             http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+              http://www.springframework.org/schema/context
+               http://www.springframework.org/schema/context/spring-context.xsd
+                http://www.springframework.org/schema/tx
+                 http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--配置c3p0连接池-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <!--注入属性值-->
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql:///template?characterEncoding=UTF-8&amp;serverTimezone=UTC&amp;useSSL=false"/>
+        <property name="user" value="root"/>
+        <property name="password" value="5201314"/>
+    </bean>
+
+    <!--创建sessionFactory-->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <!--注入DataSource-->
+        <property name="dataSource" ref="dataSource"></property>
+        <!--指定Hibernate核心配置文件 整合之后可以不写-->
+        <!--<property name="configLocations" value="classpath:hibernate.cfg.xml"></property>-->
+        <!--整合配置hibernate-->
+        <property name="hibernateProperties">
+            <props>
+                <!--框架更新数据库 调用.hbm.xml配置文件-->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <!--输出底层sql语句(可为false)-->
+                <prop key="hibernate.show_sql">true</prop>
+                <!--输出底层sql语句格式(可为false)-->
+                <prop key="hibernate.format_sql">true</prop>
+                <!--配置数据库方言-->
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+            </props>
+        </property>
+        <property name="mappingResources">
+            <list>
+                <value>name/zzj/entity/User.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--创建HibernateTemplate对象-->
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <!--注入sessionFactory-->
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+
+    <!--引入其他spring配置文件-->
+    <!--<import resource="classpath:spring.xml"/>-->
+
+    <bean id="userDao" class="name.zzj.daoImpl.UserDaoImpl">
+        <property name="hibernateTemplate" ref="hibernateTemplate"></property>
+    </bean>
+
+    <bean id="userService" class="name.zzj.service.UserService">
+        <property name="userDao" ref="userDao"></property>
+    </bean>
+
+    <!--spring整合struts2项目-->
+    <bean id="userAction" class="name.zzj.action.UserAction" scope="prototype">
+        <property name="userService" ref="userService"></property>
+    </bean>
+
+    <!--1、配置事务管理器-->
+    <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <!--注入sessionFactory，其中包含了数据库连接池-->
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!--注解配置-->
+    <!--开启事务注解-->
+    <tx:annotation-driven transaction-manager="txManager"/>
+</beans>

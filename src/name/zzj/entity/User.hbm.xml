@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <!--
+        1、配置类和表对应
+        class标签
+        name属性：对应实体类全路径
+        table属性：数据库表名
+    -->
+    <class name="name.zzj.entity.User" table="user">
+        <!--2、配置实体类中属性与表中属性相对应-->
+        <id name="uid" column="u_id">
+            <!--设置主键自动增长，可设置的值分别为：increment、identity(Oracle数据库不支持)、sequence、native、uuid(使用128位UUID生成算法)、assigned(使用java程序生成标识符)-->
+            <generator class="native"></generator>
+        </id>
+        <!--3、设置其他非主键属性与表中属性对应-->
+        <property name="uname" column="u_name"></property>
+        <property name="password" column="u_pwd"></property>
+    </class>
+</hibernate-mapping>
